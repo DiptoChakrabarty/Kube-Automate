@@ -1,9 +1,9 @@
-from flask import Flask,request
+from flask import Flask,request,jsonify
 from kubernetes import client,config
 
 app=Flask(__name__)
 
-@app.route("/deployment",methods=["POST"])
+@app.route("/deploy",methods=["POST"])
 def deployment():
     data = request.get_json()
     metadata_name = data["metadata_name"]
@@ -42,6 +42,15 @@ def deployment():
     #create deployment
     spec.template.spec.containers = [container]
     deployment.spec = spec
+
+    kube_client.create_namespaced_deployment(namespace="default",body=deployment)
+
+    ret = {
+        "Status": 200,
+        "Msg": "Deployment Successful"
+    }
+
+    return jsonify(ret)
 
 
 
