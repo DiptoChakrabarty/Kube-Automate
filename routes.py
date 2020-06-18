@@ -11,6 +11,7 @@ def deployment():
     container_name = data["container_name"]
     container_image =  data["container_image"]
     container_port = data["container_port"]
+    labels = data["labels"]
 
     if os.getenv('KUBERNETES_SERVICE_HOST'):
         config.load_incluster_config()
@@ -27,6 +28,10 @@ def deployment():
     #define spec
     spec = client.V1DeploymentSpec()
     spec.replicas = replicas 
+
+    spec.template = client.V1PodTemplateSpec()
+    spec.template.metadata = client.V1ObjectMeta(labels=labels)
+    spec.template.spec = client.V1PodSpec()
 
     #define container
     container = client.V1Container()
