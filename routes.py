@@ -77,6 +77,16 @@ def service():
     spec.selector = selectors
 
     spec.ports = [client.V1ServicePort(protocol="TCP",port=port , target_port=target_port)]
+    svc.spec = spec
+
+    kube_client.create_namespaced_service(namespace="default",body=svc)
+
+    ret = {
+        "Status": 200,
+        "Msg": "Service up  Successfully"
+    }
+
+    return jsonify(ret)
 
 
 
