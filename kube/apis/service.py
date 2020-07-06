@@ -32,6 +32,11 @@ def delete_service(svc_name):
         config.load_kube_config()
     kube_client = client.ApiClient()
 
-    svc = kubecli.CoreV1Api()
-    svc.delete_namespaced_service(name=svc_name, 
-    namespace="default", body=kubecli.V1DeleteOptions(propagation_policy="Foreground", grace_period_seconds=5))
+    try:
+        svc = kubecli.CoreV1Api()
+        svc.delete_namespaced_service(name=svc_name, 
+        namespace="default", body=kubecli.V1DeleteOptions(propagation_policy="Foreground", grace_period_seconds=5))
+        return 200
+    except Exception as e:
+        print(e)
+        reuturn 401

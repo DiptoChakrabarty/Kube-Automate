@@ -1,8 +1,8 @@
-from kube.apis.deployment import create_deployment
-from kube.apis.service import create_service
+from kube.apis.deployment import create_deployment,delete_deployment
+from kube.apis.service import create_service,delete_service
 
-@app.route("/deploy",methods=["POST"])
-def deployment():
+@app.route("/deploy/create",methods=["POST"])
+def deployment_create():
     data = request.get_json()
     metadata_name = data["metadata_name"]
     replicas = data["replicas"]
@@ -20,7 +20,27 @@ def deployment():
 
     return jsonify(ret)
 
-@app.route("/service",methods=["POST"])
+@app.route("/deploy/delete",methods=["POST"])
+def deployment_delete():
+    data=request.get_json()
+    deployment_name=data["name"]
+
+    status = delete_deployment(deployment_name)
+    msg="Deleted deployment"
+    if status!=200:
+        msg="Deployment not present"
+
+
+    ret = {
+        "Status": status,
+        "Msg": msg
+    }
+
+    return jsonify(ret)
+
+
+
+@app.route("/service/create",methods=["POST"])
 def service():
     data = request.get_json()
     metadata_name = data["metadata_name"]
@@ -37,9 +57,25 @@ def service():
 
     return jsonify(ret)
 
-@app.route("/ingress",methods=["POST"])
-def ingress():
-    data= request.get_json()
+
+@app.route("/service/delete",methods=["POST"])
+def service_delete():
+    data=request.get_json()
+    svc_name=data["name"]
+
+    status = delete_service(svc_name)
+    msg="Service deleted"
+
+    if status!=200:
+        msg = "Service not present"
+    
+    ret = {
+        "Status": status,
+        "Msg": msg
+    }
+
+    return jsonify(ret)
+
     
 
 
