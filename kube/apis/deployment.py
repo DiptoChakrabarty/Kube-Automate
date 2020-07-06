@@ -34,3 +34,14 @@ def create_deployment(metadata_name,labels,container_name,container_image,contai
     kube_client.create_namespaced_deployment(namespace="default",body=deployment)
 
     return 200
+
+def delete_deployment(deployment_name):
+    if os.getenv('KUBERNETES_SERVICE_HOST'):
+        config.load_incluster_config()
+    else:
+        config.load_kube_config()
+    kube_client = client.ApiClient()
+
+    deploy = kubecli.AppsV1Api()
+    deploy.delete_namespaced_deployment(name=deployment_name, 
+    namespace="default", body=kubecli.V1DeleteOptions(propagation_policy="Foreground", grace_period_seconds=5))

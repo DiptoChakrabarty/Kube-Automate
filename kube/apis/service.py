@@ -23,3 +23,15 @@ def create_service(metadata_name,port,target_port,selectors):
     kube_client.create_namespaced_service(namespace="default",body=svc)
 
     return 200
+
+
+def delete_service(svc_name):
+    if os.getenv('KUBERNETES_SERVICE_HOST'):
+        config.load_incluster_config()
+    else:
+        config.load_kube_config()
+    kube_client = client.ApiClient()
+
+    svc = kubecli.CoreV1Api()
+    svc.delete_namespaced_service(name=svc_name, 
+    namespace="default", body=kubecli.V1DeleteOptions(propagation_policy="Foreground", grace_period_seconds=5))
